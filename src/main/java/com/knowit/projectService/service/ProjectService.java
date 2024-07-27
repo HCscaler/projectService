@@ -8,12 +8,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ProjectService {
 
     @Autowired
     private ProjectRepository projectRepository;
+    
+    @Autowired
+    private TaskClient taskClient;
 
     public Project createProject(Project project){
         return projectRepository.save(project);
@@ -24,11 +29,14 @@ public class ProjectService {
     }
 
     public Project getProjectById(int id){
-        Optional<Project> optionalProject = projectRepository.findById(id);
-        if(optionalProject.isEmpty()){
+//        Optional<Project> optionalProject = projectRepository.findById(id);
+//       Stream<Object> projects = optionalProject.stream().map(p ->{p.setTask(taskClient.getTaskByProjectId(p.getId())); return p;});
+    	Project project = projectRepository.findById(id).orElse(null);
+        if(project == null){
             throw new ProjectNotFoundException("Project with id "+id+" not present");
         }
-        return optionalProject.get();
+        project.setTask(taskClient.getTaskByProjectId(project.getId()));
+        return  project;
     }
 
     public Project updateProjectById(int id, Project project){

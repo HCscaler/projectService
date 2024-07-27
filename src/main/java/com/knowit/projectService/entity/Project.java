@@ -7,6 +7,7 @@ import jakarta.persistence.Table;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "projects")
@@ -19,8 +20,17 @@ public class Project {
     private LocalDate startDate;
     private LocalDate dueDate;
     private int userId;
+    transient List<Task> task;
 
-    public Project() {
+    public List<Task> getTask() {
+		return task;
+	}
+
+	public void setTask(List<Task> task) {
+		this.task = task;
+	}
+
+	public Project() {
     }
 
     public Project(int id, String title, String description, LocalDate startDate, LocalDate dueDate, int userId) {
